@@ -36,15 +36,19 @@
           </n-grid>
 
           <n-icon class="icon" style="right: 35%" :component="MessageIcon" />
-          <n-image
-            v-if="data.lastFile"
-            class="preview"
-            :width="288"
-            :src="`/api/public/images/${data.lastFile}`"
-            preview-disabled
-            object-fit="cover"
-          />
           <div class="decoration d1" />
+
+          <n-spin class="preview" :show="previewLoading">
+            <n-image
+              v-if="data.lastFile"
+              :width="288"
+              :height="116"
+              :src="`/api/public/images/${data.lastFile}`"
+              preview-disabled
+              object-fit="cover"
+              @load="previewLoading = false"
+            />
+          </n-spin>
         </div>
       </n-gi>
 
@@ -77,7 +81,7 @@
           </n-gi>
 
           <n-gi :span="12">
-            <div class="button blue small" @click="addPOI">
+            <div class="button blue small" @click="openUploadPage">
               <div class="banner">
                 <n-icon :component="NoInternetIcon" />
                 弱网环境
@@ -145,6 +149,7 @@ const message = useMessage()
 const mshd = useMSHDStore()
 
 const name = localStorage.getItem('name')
+const previewLoading = ref(true)
 const data = ref<Data>({
   todayMessages: 0,
   totalMessages: 0,
@@ -156,6 +161,7 @@ onMounted(async () => {
   const response = await mshd.get<Data>('/api/page/home')
   if (typeof response === 'string') return message.error('加载失败。' + response)
   data.value = response
+  if (!response.lastFile) previewLoading.value = false
   mshd.map?.animateTo({ center: [100, 33], zoom: 4 })
   mshd.addPoints(response.todayCoords)
 })
@@ -164,8 +170,8 @@ onUnmounted(() => {
   mshd.clearPoints()
 })
 
-function addPOI() {
-  message.success('Hello World')
+function openUploadPage() {
+  window.open('/upload.html', '_blank')
 }
 
 function quit() {
