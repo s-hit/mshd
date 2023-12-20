@@ -12,7 +12,12 @@
           </n-form-item-gi>
 
           <n-form-item-gi :span="12" label="情报时间" path="time">
-            <n-date-picker type="datetime" style="width: 100%" v-model:value="data.time" />
+            <n-date-picker
+              type="datetime"
+              style="width: 100%"
+              v-model:value="data.time"
+              :is-date-disabled="(t: number) => t > Date.now()"
+            />
           </n-form-item-gi>
 
           <n-form-item-gi :span="21" label="情报位置">
@@ -69,7 +74,7 @@ const data = ref({
   lng: NaN,
   lat: NaN,
   type: 0,
-  time: new Date().getTime(),
+  time: Date.now(),
   attachments: [] as UploadFileInfo[],
 })
 

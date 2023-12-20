@@ -1,4 +1,6 @@
 .vscode
+auto-imports.d.ts
+components.d.ts
 
 # Logs
 logs
@@ -28,3 +30,4 @@ coverage
 *.njsproj
 *.sln
 *.sw?
+components.d.ts

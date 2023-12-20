@@ -55,7 +55,6 @@ const emit = defineEmits<{
 const router = useRouter()
 
 function handleScroll(event: Event) {
-  // console.log(event)
   const target = event.target as HTMLElement
   const operations = document.getElementById('operations') as HTMLElement
   const x = Math.min(target.scrollTop, 320)

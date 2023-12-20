@@ -23,6 +23,14 @@ export const useMSHDStore = defineStore('mshd', () => {
   const vectorLayer = ref<mt.VectorLayer>()
   const points = ref<mt.Marker[]>([])
 
+  const markerColor = ref(localStorage.getItem('markerColor') ?? '')
+  if (!/^#[0-9A-Fa-f]{6}$/.test(markerColor.value)) markerColor.value = '#bf3f53'
+
+  const theme = ref(localStorage.getItem('theme') ?? '')
+  if (theme.value !== 'light' && theme.value !== 'dark') theme.value = 'system'
+
+  const disable3D = ref(localStorage.getItem('disable3D') === 'true')
+
   function initMap() {
     map.value = new mt.Map('map', {
       center: [100, 33],
@@ -49,36 +57,37 @@ export const useMSHDStore = defineStore('mshd', () => {
   }
 
   function clearPoints() {
-    let index = 0
-    for (const point of points.value)
-      setTimeout(() => {
-        point.animate({ symbol: { markerWidth: 0, markerHeight: 0 } }, { duration: 150 })
+    points.value.map(point => {
+      point.animate({ symbol: { markerWidth: 0, markerHeight: 0 } }, { duration: 200 }, frame => {
+        if (frame.state.playState === 'finished') point.remove()
+      })
+    })
 
-        setTimeout(() => {
-          point.remove()
-        }, 150)
-      }, 200 * index++)
     points.value = []
   }
 
   function addPoints(coords: [number, number][]) {
-    let index = 2
-    for (const coord of coords) {
-      const point = new mt.Marker(coord, {
+    if (!vectorLayer.value) return
+
+    const newPoints = coords.map(coord =>
+      new mt.Marker(coord, {
         symbol: {
           markerType: 'pin',
-          markerFill: '#bf3f53',
+          markerFill: markerColor.value,
           markerWidth: 0,
           markerHeight: 0,
         },
-      })
-      points.value.push(point)
+      }).addTo(vectorLayer.value!),
+    )
 
-      setTimeout(() => {
-        if (vectorLayer.value) point.addTo(vectorLayer.value)
-        point.animate({ symbol: { markerWidth: 40, markerHeight: 40 } }, { duration: 150 })
-      }, 200 * index++)
-    }
+    points.value = points.value.concat(newPoints)
+
+    newPoints.map((point, index) =>
+      setTimeout(
+        () => point.animate({ symbol: { markerWidth: 40, markerHeight: 40 } }, { duration: 200 }),
+        100 * index,
+      ),
+    )
   }
 
   function getURL(url: string, query?: object) {
@@ -124,5 +133,5 @@ export const useMSHDStore = defineStore('mshd', () => {
     return response.data
   }
 
-  return { map, initMap, clearPoints, addPoints, getURL, get, post }
+  return { map, markerColor, theme, disable3D, initMap, clearPoints, addPoints, getURL, get, post }
 })

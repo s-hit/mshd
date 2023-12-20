@@ -1,5 +1,5 @@
 <template>
-  <m-page hide-operations no-padding-right>
+  <m-page hide-operations no-padding-right style="user-select: none; -webkit-user-select: none">
     <n-grid :x-gap="12" :y-gap="12">
       <n-gi :span="22" :offset="2">
         <n-divider class="time" title-placement="left">
@@ -76,7 +76,7 @@
       </n-gi>
 
       <n-gi :span="7" :offset="2">
-        <div class="button" @click="addPOI">
+        <div class="button" @click="router.push('/settings')">
           <div class="title">设置</div>
           <n-icon class="icon" :component="SettingsIcon" />
           <div class="decoration d2" />

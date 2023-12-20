@@ -1,6 +1,6 @@
 <template>
   <n-config-provider
-    :theme="osTheme === 'dark' ? darkTheme : undefined"
+    :theme="useDarkTheme ? darkTheme : undefined"
     :locale="zhCN"
     :date-locale="dateZhCN"
   >
@@ -21,7 +21,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted } from 'vue'
+import { computed, onMounted, onUnmounted } from 'vue'
 import { RouterView } from 'vue-router'
 import { useOsTheme, darkTheme, zhCN, dateZhCN } from 'naive-ui'
 import { useMSHDStore } from '@/stores/mshd'
@@ -29,18 +29,25 @@ import { useMSHDStore } from '@/stores/mshd'
 const osTheme = useOsTheme()
 const mshd = useMSHDStore()
 
+const useDarkTheme = computed(
+  () => mshd.theme === 'dark' || (mshd.theme === 'system' && osTheme.value === 'dark'),
+)
+
 function onMouseMove(event: MouseEvent) {
   const w = window.innerWidth
   const x = event.pageX
 
   const map = document.getElementById('map')!
-  map.style.transform = `translateX(${20 * ((2 * x) / w - 1)}px)`
+  map.style.transform = mshd.disable3D ? '' : `translateX(${20 * ((2 * x) / w - 1)}px)`
 
   const panel = document.getElementById('panel')!
-  panel.style.transform = `rotateY(${20 * (x / w - 1) - 10}deg)`
+  panel.style.transform = mshd.disable3D ? '' : `rotateY(${20 * (x / w - 1) - 10}deg)`
 }
 
 onMounted(() => {
+  const panel = document.getElementById('panel')!
+  panel.style.transform = mshd.disable3D ? '' : 'rotateY(-20deg)'
+
   window.addEventListener('mousemove', onMouseMove)
   mshd.initMap()
 })
@@ -74,8 +81,7 @@ onUnmounted(() => {
 
   width: 768px;
   max-width: 100%;
-
-  transform: rotateY(-20deg);
+  perspective: 0px;
 
   @include bezier;
   transition: transform 0.5s ease-out;
