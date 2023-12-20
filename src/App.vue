@@ -1,9 +1,11 @@
 <template>
   <n-config-provider
-    :theme="useDarkTheme ? darkTheme : undefined"
+    :theme="mshd.useDarkTheme ? darkTheme : undefined"
+    :theme-overrides="themeOverrides"
     :locale="zhCN"
     :date-locale="dateZhCN"
   >
+    <n-global-style />
     <n-message-provider>
       <div class="stage">
         <div id="map" class="map" />
@@ -23,15 +25,23 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted } from 'vue'
 import { RouterView } from 'vue-router'
-import { useOsTheme, darkTheme, zhCN, dateZhCN } from 'naive-ui'
+import { darkTheme, zhCN, dateZhCN } from 'naive-ui'
 import { useMSHDStore } from '@/stores/mshd'
+import { generate } from '@ant-design/colors'
 
-const osTheme = useOsTheme()
 const mshd = useMSHDStore()
 
-const useDarkTheme = computed(
-  () => mshd.theme === 'dark' || (mshd.theme === 'system' && osTheme.value === 'dark'),
-)
+const themeOverrides = computed(() => {
+  const colors = generate(mshd.primaryColor)
+  return {
+    common: {
+      primaryColor: colors[5],
+      primaryColorHover: colors[4],
+      primaryColorPressed: colors[6],
+      primaryColorSuppl: colors[5],
+    },
+  }
+})
 
 function onMouseMove(event: MouseEvent) {
   const w = window.innerWidth

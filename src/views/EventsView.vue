@@ -53,6 +53,7 @@ const data = ref<Data>({
 const page = ref(1)
 
 async function fetchData() {
+  data.value.events = []
   const response = await mshd.get<Data>('/api/page/events', { page: page.value - 1 })
   if (typeof response === 'string') return message.error('加载失败。' + response)
   data.value = response

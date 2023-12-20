@@ -211,6 +211,7 @@ const input = ref({
 })
 
 async function fetchData() {
+  data.value.messages = []
   const response = await mshd.get<Data>('/api/page/messages', {
     filter: props.filter,
     page: page.value - 1,

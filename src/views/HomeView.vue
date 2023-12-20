@@ -1,5 +1,10 @@
 <template>
-  <m-page hide-operations no-padding-right style="user-select: none; -webkit-user-select: none">
+  <m-page
+    hide-operations
+    no-padding-right
+    style="user-select: none; -webkit-user-select: none"
+    :class="{ dark: mshd.useDarkTheme }"
+  >
     <n-grid :x-gap="12" :y-gap="12">
       <n-gi :span="22" :offset="2">
         <n-divider class="time" title-placement="left">
@@ -30,7 +35,15 @@
             </n-gi>
           </n-grid>
 
-          <n-icon class="icon" style="right: 40%" :component="MessageIcon" />
+          <n-icon class="icon" style="right: 35%" :component="MessageIcon" />
+          <n-image
+            v-if="data.lastFile"
+            class="preview"
+            :width="288"
+            :src="`/api/public/images/${data.lastFile}`"
+            preview-disabled
+            object-fit="cover"
+          />
           <div class="decoration d1" />
         </div>
       </n-gi>
@@ -86,7 +99,7 @@
       <n-gi :span="10">
         <n-grid :cols="10">
           <n-gi :span="7">
-            <div class="button" @click="addPOI">
+            <div class="button" @click="router.push('/stats')">
               <div class="title">统计</div>
               <div class="description small">BETA</div>
               <n-icon class="icon" :component="StatsIcon" />
@@ -124,6 +137,7 @@ type Data = {
   totalMessages: number
   todayMessages: number
   todayCoords: [number, number][]
+  lastFile?: string
 }
 
 const router = useRouter()
@@ -261,6 +275,14 @@ function quit() {
     z-index: 1;
   }
 
+  .preview {
+    position: absolute;
+    right: 12px;
+    top: 12px;
+    bottom: 12px;
+    box-shadow: 2px 8px 8px rgba(0, 0, 0, 0.3);
+    z-index: 2;
+  }
   .decoration {
     position: absolute;
     background-color: #eb6833;
@@ -328,7 +350,7 @@ function quit() {
     }
   }
 
-  @media #{$dark} {
+  .dark &:not(.blue) {
     color: #e0e0e0;
     background-color: #404040;
 

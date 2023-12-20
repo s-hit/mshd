@@ -13,6 +13,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@ant-design/colors": "^7.0.0",
     "axios": "^1.6.2",
     "maptalks": "^1.0.0-rc.28",
     "pinia": "^2.1.7",

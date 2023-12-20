@@ -2,6 +2,15 @@
   <m-page>
     <n-card>
       <n-form>
+        <n-form-item label="主题颜色">
+          <n-color-picker
+            v-model:value="primaryColor"
+            :modes="['hex']"
+            :show-alpha="false"
+            :swatches="['#eb6833']"
+          />
+        </n-form-item>
+
         <n-form-item label="地图标记颜色">
           <n-color-picker
             v-model:value="markerColor"
@@ -37,6 +46,16 @@ import { computed } from 'vue'
 import { useMSHDStore } from '@/stores/mshd'
 
 const mshd = useMSHDStore()
+
+const primaryColor = computed({
+  get() {
+    return mshd.primaryColor
+  },
+  set(v: string) {
+    localStorage.setItem('primaryColor', v)
+    mshd.primaryColor = v
+  },
+})
 
 const markerColor = computed({
   get() {

@@ -1,7 +1,10 @@
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { Axios, type AxiosRequestConfig } from 'axios'
 import * as mt from 'maptalks'
+import { useOsTheme } from 'naive-ui'
+
+const osTheme = useOsTheme()
 
 const axios = new Axios({
   headers: {
@@ -23,11 +26,17 @@ export const useMSHDStore = defineStore('mshd', () => {
   const vectorLayer = ref<mt.VectorLayer>()
   const points = ref<mt.Marker[]>([])
 
+  const primaryColor = ref(localStorage.getItem('primaryColor') ?? '')
+  if (!/^#[0-9A-Fa-f]{6}$/.test(primaryColor.value)) primaryColor.value = '#eb6833'
+
   const markerColor = ref(localStorage.getItem('markerColor') ?? '')
   if (!/^#[0-9A-Fa-f]{6}$/.test(markerColor.value)) markerColor.value = '#bf3f53'
 
   const theme = ref(localStorage.getItem('theme') ?? '')
   if (theme.value !== 'light' && theme.value !== 'dark') theme.value = 'system'
+  const useDarkTheme = computed(
+    () => theme.value === 'dark' || (theme.value === 'system' && osTheme.value === 'dark'),
+  )
 
   const disable3D = ref(localStorage.getItem('disable3D') === 'true')
 
@@ -133,5 +142,18 @@ export const useMSHDStore = defineStore('mshd', () => {
     return response.data
   }
 
-  return { map, markerColor, theme, disable3D, initMap, clearPoints, addPoints, getURL, get, post }
+  return {
+    map,
+    primaryColor,
+    markerColor,
+    theme,
+    useDarkTheme,
+    disable3D,
+    initMap,
+    clearPoints,
+    addPoints,
+    getURL,
+    get,
+    post,
+  }
 })

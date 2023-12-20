@@ -46,10 +46,15 @@ const router = createRouter({
       name: 'settings',
       component: () => import('@/views/SettingsView.vue'),
     },
+    {
+      path: '/stats',
+      name: 'stats',
+      component: () => import('@/views/StatsView.vue'),
+    },
   ],
 })
 
-router.beforeEach((to, from) => {
+router.beforeEach(to => {
   if (!to.meta.public && !localStorage.getItem('token')) {
     return {
       path: '/login',
