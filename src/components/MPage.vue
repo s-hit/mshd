@@ -1,14 +1,14 @@
 <template>
   <main class="page" @scroll="handleScroll" :style="noPaddingRight ? '' : 'padding-right: 64px;'">
     <n-space class="operations" :style="hideOperations ? 'display: none;' : ''" id="operations">
-      <n-button quaternary color="white" @click="router.back()">
+      <n-button v-if="!noDefaultOperations" quaternary color="white" @click="router.back()">
         <template #icon>
           <n-icon :component="BackIcon" />
         </template>
         返回
       </n-button>
 
-      <n-button quaternary color="white" @click="router.push('/')">
+      <n-button v-if="!noDefaultOperations" quaternary color="white" @click="router.push('/')">
         <template #icon>
           <n-icon :component="HomeIcon" />
         </template>
@@ -41,6 +41,7 @@ import { ArrowBackIosNewSharp as BackIcon, HomeSharp as HomeIcon } from '@vicons
 defineProps<{
   hideOperations?: boolean
   noPaddingRight?: boolean
+  noDefaultOperations?: boolean
   operations?: {
     component: Component
     label?: string

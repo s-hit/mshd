@@ -107,8 +107,25 @@
                 <template #icon>
                   <n-icon :component="PinIcon" />
                 </template>
-                查看位置
+                转到
               </n-button>
+
+              <n-tooltip trigger="hover">
+                <n-time format="yyMMddhhmmss" :time="new Date(message.time)" />{{
+                  message.type.toString().padStart(2, '0')
+                }}{{ (message.lng ?? 0).toFixed(0).padStart(3, '0')
+                }}{{ (message.lat ?? 0).toFixed(0).padStart(3, '0')
+                }}{{ message.id.toString().padStart(2, '0').slice(-2) }}
+
+                <template #trigger>
+                  <n-button secondary size="small">
+                    <template #icon>
+                      <n-icon :component="CodeIcon" />
+                    </template>
+                    灾情码
+                  </n-button>
+                </template>
+              </n-tooltip>
             </n-space>
           </n-p>
 
@@ -130,11 +147,8 @@
           </n-p>
 
           <n-p :depth="3">
-            {{ message.area }} ・ {{ types[message.type] }}
-            <n-text v-if="message.time" :depth="3">
-              ・ <n-time :time="new Date(message.time)" />
-            </n-text>
-            ・ 发布于
+            {{ message.area }} ・ {{ types[message.type] }} ・
+            <n-time :time="new Date(message.time)" /> ・ 发布于
             <n-time :time="new Date(message.createdAt)" type="relative" />
           </n-p>
         </n-card>
@@ -159,6 +173,7 @@ import {
   PinDropSharp as PinIcon,
   StarFilled,
   StarBorderSharp as StarBorder,
+  BarcodeSharp as CodeIcon,
   CloseSharp as DeleteIcon,
 } from '@vicons/material'
 
@@ -174,7 +189,7 @@ type Message = {
   lat?: number
   area: string
   type: number
-  time?: number
+  time: number
   eventId: number
   eventName: string
   fileNames: string[]

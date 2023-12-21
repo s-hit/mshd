@@ -37,7 +37,12 @@ async function login() {
   })
   if (typeof response === 'string') return message.error('登录失败。' + response)
   localStorage.setItem('token', response.token)
-  localStorage.setItem('name', name.value)
-  router.replace(props.redirect)
+
+  if (name.value !== 'Admin') {
+    localStorage.setItem('name', name.value)
+    router.replace(props.redirect)
+  } else {
+    router.push('/manage')
+  }
 }
 </script>

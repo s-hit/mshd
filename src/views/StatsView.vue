@@ -1,7 +1,7 @@
 <template>
   <m-page>
     <n-space vertical>
-      <n-card>
+      <n-card title="总体统计">
         <n-grid :x-gap="12">
           <n-gi :span="6"><n-statistic label="情报" :value="data.messages" /></n-gi>
           <n-gi :span="6"><n-statistic label="灾情" :value="data.events" /></n-gi>

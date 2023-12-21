@@ -1,6 +1,6 @@
 <template>
   <m-page>
-    <n-card>
+    <n-card title="设置">
       <n-form>
         <n-form-item label="主题颜色">
           <n-color-picker
